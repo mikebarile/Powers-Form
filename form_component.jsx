@@ -9,11 +9,6 @@ class FormComponent extends React.Component {
       3: null,
       4: null,
       5: null,
-      "error1": false,
-      "error2": false,
-      "error3": false,
-      "error4": false,
-      "error5": false
     };
 
     this.update = this.update.bind(this);
@@ -21,11 +16,10 @@ class FormComponent extends React.Component {
     this.setExpectations = this.setExpectations.bind(this);
     this.checkValidInputs = this.checkValidInputs.bind(this);
     this.checkValidInput = this.checkValidInput.bind(this);
-    this.renderInput = this.renderInput.bind(this);
     this.setErrors = this.setErrors.bind(this);
   }
 
-  componentDidUpdate(){
+  componentDidUpdate() {
     this.validate();
   }
 
@@ -41,24 +35,24 @@ class FormComponent extends React.Component {
     let errorInputs = [];
     this.checkValidInputs();
 
-    for (var i = 1; i < 6; i++) {
-      //Iterate through each val, check for validity, and then set errors.
-      let inputs = [];
-      if (this.state[i] && this.checkValidInput(i) && !errorInputs.includes(i)){
-        let expectations = this.setExpectations(i);
-
-        for (var j = 1; j < 6; j++) {
-          if (this.state[j] !== null && this.state[j] !== expectations[j]){
-            inputs.push(j);
-          }
-        }
-      }
-
-      //Update errorInputs if inputs is shorter e.g. this set is 'less wrong'
-      if (inputs.length > errorInputs.length){
-        errorInputs = inputs.slice();
-      }
-    }
+    // for (var i = 1; i < 6; i++) {
+    //   //Iterate through each val, check for validity, and then set errors.
+    //   let inputs = [];
+    //   if (this.state[i] && this.checkValidInput(i) && !errorInputs.includes(i)){
+    //     let expectations = this.setExpectations(i);
+    //
+    //     for (var j = 1; j < 6; j++) {
+    //       if (this.state[j] !== null && this.state[j] !== expectations[j]){
+    //         inputs.push(j);
+    //       }
+    //     }
+    //   }
+    //
+    //   //Update errorInputs if inputs is shorter e.g. this set is 'less wrong'
+    //   if (inputs.length > errorInputs.length){
+    //     errorInputs = inputs.slice();
+    //   }
+    // }
 
     this.setErrors(errorInputs);
   }
@@ -77,14 +71,10 @@ class FormComponent extends React.Component {
   checkValidInputs() {
     for (var i = 1; i < 6; i++) {
       if (this.checkValidInput(i)) {
-        this.setState({
-          [`error${i}`]: false
-        });
+        $(`#${i}`).removeClass("error");
       }
       else {
-        this.setState({
-          [`error${i}`]: true
-        });
+        $(`#${i}`).addClass("error");
       }
     }
   }
@@ -92,16 +82,6 @@ class FormComponent extends React.Component {
   checkValidInput(i) {
     let val = this.state[i];
     return !isNaN(val) && val !== undefined && val % 2 === 0;
-  }
-
-  renderInput(inputID) {
-    //Renders input w/ a red outline if invalid
-    if (this.state[`error${inputID}`]){
-      return "input error";
-    }
-    else {
-      return "input";
-    }
   }
 
   setErrors(inputs){
@@ -119,28 +99,33 @@ class FormComponent extends React.Component {
 
         <div className="form">
           <input
+          id="1"
           onChange={this.update(1)}
-          className={this.renderInput(1)}
+          className="input"
           type="text"/>
 
           <input
+          id="2"
           onChange={this.update(2)}
-          className={this.renderInput(2)}
+          className="input"
           type="text"/>
 
           <input
+          id="3"
           onChange={this.update(3)}
-          className={this.renderInput(3)}
+          className="input"
           type="text"/>
 
           <input
+          id="4"
           onChange={this.update(4)}
-          className={this.renderInput(4)}
+          className="input"
           type="text"/>
 
           <input
+          id="5"
           onChange={this.update(5)}
-          className={this.renderInput(5)}
+          className="input"
           type="text"/>
         </div>
 
