@@ -4,11 +4,11 @@ class FormComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      1: null,
-      2: null,
-      3: null,
-      4: null,
-      5: null,
+      1: "",
+      2: "",
+      3: "",
+      4: "",
+      5: "",
     };
 
     this.update = this.update.bind(this);
@@ -17,6 +17,7 @@ class FormComponent extends React.Component {
     this.checkValidInputs = this.checkValidInputs.bind(this);
     this.checkValidInput = this.checkValidInput.bind(this);
     this.setErrors = this.setErrors.bind(this);
+    this.val = this.val.bind(this);
   }
 
   componentDidUpdate() {
@@ -26,7 +27,7 @@ class FormComponent extends React.Component {
   update(inputID) {
     return (e) => {
       e.preventDefault();
-      this.setState({[inputID]: parseInt(e.target.value, 10)});
+      this.setState({[inputID]: e.target.value});
     };
   }
 
@@ -80,8 +81,9 @@ class FormComponent extends React.Component {
   }
 
   checkValidInput(i) {
-    let val = this.state[i];
-    return !isNaN(val) && val !== undefined && val % 2 === 0;
+    let val = this.val(i);
+    return this.state[i] === "" ||
+      (!isNaN(val) && val !== undefined && val % 2 === 0);
   }
 
   setErrors(inputs){
@@ -90,6 +92,11 @@ class FormComponent extends React.Component {
         [`error${i}`]: true
       });
     });
+  }
+
+  val(i){
+    //Helper function to shorten calling input value
+    parseInt(this.state[i]);
   }
 
   render() {
