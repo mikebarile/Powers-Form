@@ -19,61 +19,97 @@ class FormComponent extends React.Component {
     this.update = this.update.bind(this);
     this.validate = this.validate.bind(this);
     this.setExpectations = this.setExpectations.bind(this);
-    this.checkInputValidity = this.checkInputValidity.bind(this);
+    this.checkValidInputs = this.checkValidInputs.bind(this);
+    this.checkValidInput = this.checkValidInput.bind(this);
     this.renderInput = this.renderInput.bind(this);
+    this.setErrors = this.setErrors.bind(this);
+  }
+
+  componentDidUpdate(){
+    this.validate();
   }
 
   update(inputID) {
     return (e) => {
       e.preventDefault();
       this.setState({[inputID]: parseInt(e.target.value, 10)});
-      this.validate();
     };
   }
 
   validate() {
-    let maxErrors = 0;
+    //Validates the form and sets input error states
     let errorInputs = [];
+    this.checkValidInputs();
 
     for (var i = 1; i < 6; i++) {
-      let errors = 0;
+      //Iterate through each val, check for validity, and then set errors.
       let inputs = [];
-      let expectations = this.setExpectations(i);
+      if (this.state[i] && this.checkValidInput(i) && !errorInputs.includes(i)){
+        let expectations = this.setExpectations(i);
 
-      for (var j = 1; j < 6; j++) {
-        console.log('happy days!');
+        for (var j = 1; j < 6; j++) {
+          if (this.state[j] !== null && this.state[j] !== expectations[j]){
+            inputs.push(j);
+          }
+        }
+      }
+
+      //Update errorInputs if inputs is shorter e.g. this set is 'less wrong'
+      if (inputs.length > errorInputs.length){
+        errorInputs = inputs.slice();
+      }
+    }
+
+    this.setErrors(errorInputs);
+  }
+
+  setExpectations(i) {
+    //Establishes expected input values given a valid input
+    let expectations = {};
+    let val = this.state[i];
+
+    for (var j = 1; j < 6; j++) {
+      expectations[i] = val * Math.pow(2, (j - i));
+    }
+    return expectations;
+  }
+
+  checkValidInputs() {
+    for (var i = 1; i < 6; i++) {
+      if (this.checkValidInput(i)) {
+        this.setState({
+          [`error${i}`]: false
+        });
+      }
+      else {
+        this.setState({
+          [`error${i}`]: true
+        });
       }
     }
   }
 
-  setExpectations(i) {
-    let expectations = {};
-    if (this.checkInputValidity(i)){
-
-    }
-    else {
-
-    }
-  }
-
-  checkInputValidity(i) {
-    let valid = true;
+  checkValidInput(i) {
     let val = this.state[i];
-
-    if (!i || i % 2 !== 0){
-      valid = false;
-    }
-
-    return valid;
+    return !isNaN(val) && val !== undefined && val % 2 === 0;
   }
 
   renderInput(inputID) {
+    //Renders input w/ a red outline if invalid
     if (this.state[`error${inputID}`]){
-      return "input-error";
+      return "input error";
     }
     else {
       return "input";
     }
+  }
+
+  setErrors(inputs){
+    inputs.forEach(i => {
+      this.setState({
+        [`error${i}`]: true
+      });
+    });
   }
 
   render() {
