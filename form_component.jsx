@@ -84,7 +84,7 @@ class FormComponent extends React.Component {
   checkValidInput(i) {
     let val = this.val(i);
     return this.state[i] === "" ||
-      (!isNaN(val) && val !== undefined && val % 2 === 0);
+      (!isNaN(val) && val !== undefined && this.powerOfTwo(val));
   }
 
   setErrors(inputs){
@@ -101,6 +101,10 @@ class FormComponent extends React.Component {
   val(i){
     //Helper function to shorten calling input value
     return parseInt(this.state[i]);
+  }
+
+  powerOfTwo(val){
+    return val && (val & (val - 1)) === 0;
   }
 
   render() {
