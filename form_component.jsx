@@ -36,24 +36,25 @@ class FormComponent extends React.Component {
     let errorInputs = [];
     this.checkValidInputs();
 
-    // for (var i = 1; i < 6; i++) {
-    //   //Iterate through each val, check for validity, and then set errors.
-    //   let inputs = [];
-    //   if (this.state[i] && this.checkValidInput(i) && !errorInputs.includes(i)){
-    //     let expectations = this.setExpectations(i);
-    //
-    //     for (var j = 1; j < 6; j++) {
-    //       if (this.state[j] !== null && this.state[j] !== expectations[j]){
-    //         inputs.push(j);
-    //       }
-    //     }
-    //   }
-    //
-    //   //Update errorInputs if inputs is shorter e.g. this set is 'less wrong'
-    //   if (inputs.length > errorInputs.length){
-    //     errorInputs = inputs.slice();
-    //   }
-    // }
+
+    for (var i = 1; i < 6; i++) {
+      //Iterate through each val, check for validity, and then set errors.
+      if (this.state[i] !== "" && this.checkValidInput(i)){
+        let inputs = [];
+        let expectations = this.setExpectations(i);
+
+        for (var j = 1; j < 6; j++) {
+          if (this.state[j] !== "" && this.val(j) !== expectations[j]){
+            inputs.push(j);
+          }
+        }
+
+        //Update errorInputs if inputs is shorter e.g. this set is 'less wrong'
+        if (errorInputs.length === 0 || inputs.length < errorInputs.length){
+          errorInputs = inputs.slice();
+        }
+      }
+    }
 
     this.setErrors(errorInputs);
   }
@@ -61,10 +62,10 @@ class FormComponent extends React.Component {
   setExpectations(i) {
     //Establishes expected input values given a valid input
     let expectations = {};
-    let val = this.state[i];
+    let val = this.val(i);
 
     for (var j = 1; j < 6; j++) {
-      expectations[i] = val * Math.pow(2, (j - i));
+      expectations[j] = val * Math.pow(2, (j - i));
     }
     return expectations;
   }
@@ -87,16 +88,19 @@ class FormComponent extends React.Component {
   }
 
   setErrors(inputs){
-    inputs.forEach(i => {
-      this.setState({
-        [`error${i}`]: true
-      });
-    });
+    for (var i = 1; i < 6; i++) {
+      if (!inputs.includes(i) && this.checkValidInput(i)) {
+        $(`#${i}`).removeClass("error");
+      }
+      else {
+        $(`#${i}`).addClass("error");
+      }
+    }
   }
 
   val(i){
     //Helper function to shorten calling input value
-    parseInt(this.state[i]);
+    return parseInt(this.state[i]);
   }
 
   render() {
