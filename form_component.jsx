@@ -24,6 +24,7 @@ class FormComponent extends React.Component {
     this.validate();
   }
 
+  //Updates the state when user changes input
   update(inputID) {
     return (e) => {
       e.preventDefault();
@@ -31,14 +32,13 @@ class FormComponent extends React.Component {
     };
   }
 
+  //Validates the form and sets input errors
   validate() {
-    //Validates the form and sets input error states
     let errorInputs = [];
     this.checkValidInputs();
 
-
     for (var i = 1; i < 6; i++) {
-      //Iterate through each val, check for validity, and then set errors.
+      //Iterate through each valid val, check the set, and then render errors.
       if (this.state[i] !== "" && this.checkValidInput(i)){
         let inputs = [];
         let expectations = this.setExpectations(i);
@@ -59,8 +59,8 @@ class FormComponent extends React.Component {
     this.setErrors(errorInputs);
   }
 
+  //Establishes expected input values given a valid input
   setExpectations(i) {
-    //Establishes expected input values given a valid input
     let expectations = {};
     let val = this.val(i);
 
@@ -70,6 +70,7 @@ class FormComponent extends React.Component {
     return expectations;
   }
 
+  //Sets all invalid inputs to error class
   checkValidInputs() {
     for (var i = 1; i < 6; i++) {
       if (this.checkValidInput(i)) {
@@ -81,12 +82,14 @@ class FormComponent extends React.Component {
     }
   }
 
+  //Checks if input is valid (irrespective of other inputs)
   checkValidInput(i) {
     let val = this.val(i);
     return this.state[i] === "" ||
       (!isNaN(val) && val !== undefined && this.powerOfTwo(val));
   }
 
+  //Sets input classes after validation is complete
   setErrors(inputs){
     for (var i = 1; i < 6; i++) {
       if (!inputs.includes(i) && this.checkValidInput(i)) {
@@ -98,11 +101,12 @@ class FormComponent extends React.Component {
     }
   }
 
+  //Helper function to shorten input value
   val(i){
-    //Helper function to shorten calling input value
     return parseInt(this.state[i]);
   }
 
+  //Checks if value is a power of 2
   powerOfTwo(val){
     return val && (val & (val - 1)) === 0;
   }
