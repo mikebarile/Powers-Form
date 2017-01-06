@@ -14,6 +14,7 @@ class FormComponent extends React.Component {
     this.update = this.update.bind(this);
     this.validate = this.validate.bind(this);
     this.setExpectations = this.setExpectations.bind(this);
+    this.checkSets = this.checkSets.bind(this);
     this.checkValidInputs = this.checkValidInputs.bind(this);
     this.checkValidInput = this.checkValidInput.bind(this);
     this.setErrors = this.setErrors.bind(this);
@@ -34,28 +35,8 @@ class FormComponent extends React.Component {
 
   //Validates the form and sets input errors
   validate() {
-    let errorInputs = [];
     this.checkValidInputs();
-
-    for (var i = 1; i < 6; i++) {
-      //Iterate through each valid val, check the set, and then render errors.
-      if (this.state[i] !== "" && this.checkValidInput(i)){
-        let inputs = [];
-        let expectations = this.setExpectations(i);
-
-        for (var j = 1; j < 6; j++) {
-          if (this.state[j] !== "" && this.val(j) !== expectations[j]){
-            inputs.push(j);
-          }
-        }
-
-        //Update errorInputs if inputs is shorter e.g. this set is 'less wrong'
-        if (errorInputs.length === 0 || inputs.length < errorInputs.length){
-          errorInputs = inputs.slice();
-        }
-      }
-    }
-
+    let errorInputs = this.checkSets();
     this.setErrors(errorInputs);
   }
 
@@ -87,6 +68,29 @@ class FormComponent extends React.Component {
     let val = this.val(i);
     return this.state[i] === "" ||
       (!isNaN(val) && val !== undefined && this.powerOfTwo(val));
+  }
+
+  checkSets() {
+    let errorInputs = [];
+    for (var i = 1; i < 6; i++) {
+      //Iterate through each valid val, check the set, and then render errors.
+      if (this.state[i] !== "" && this.checkValidInput(i)){
+        let inputs = [];
+        let expectations = this.setExpectations(i);
+
+        for (var j = 1; j < 6; j++) {
+          if (this.state[j] !== "" && this.val(j) !== expectations[j]){
+            inputs.push(j);
+          }
+        }
+
+        //Update errorInputs if inputs is shorter e.g. this set is 'less wrong'
+        if (errorInputs.length === 0 || inputs.length < errorInputs.length){
+          errorInputs = inputs.slice();
+        }
+      }
+    }
+    return errorInputs;
   }
 
   //Sets input classes after validation is complete
