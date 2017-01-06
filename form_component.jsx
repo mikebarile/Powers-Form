@@ -13,10 +13,10 @@ class FormComponent extends React.Component {
 
     this.update = this.update.bind(this);
     this.validate = this.validate.bind(this);
-    this.setExpectations = this.setExpectations.bind(this);
-    this.checkSets = this.checkSets.bind(this);
     this.checkValidInputs = this.checkValidInputs.bind(this);
     this.checkValidInput = this.checkValidInput.bind(this);
+    this.checkSets = this.checkSets.bind(this);
+    this.setExpectations = this.setExpectations.bind(this);
     this.setErrors = this.setErrors.bind(this);
     this.val = this.val.bind(this);
   }
@@ -33,22 +33,11 @@ class FormComponent extends React.Component {
     };
   }
 
-  //Validates the form and sets input errors
+  //Validates the form and renders errors
   validate() {
     this.checkValidInputs();
     let errorInputs = this.checkSets();
     this.setErrors(errorInputs);
-  }
-
-  //Establishes expected input values given a valid input
-  setExpectations(i) {
-    let expectations = {};
-    let val = this.val(i);
-
-    for (var j = 1; j < 6; j++) {
-      expectations[j] = val * Math.pow(2, (j - i));
-    }
-    return expectations;
   }
 
   //Sets all invalid inputs to error class
@@ -70,10 +59,11 @@ class FormComponent extends React.Component {
       (!isNaN(val) && val !== undefined && this.powerOfTwo(val));
   }
 
+  //Iterate through each valid val, check against the expected set,
+  //update errorInputs if set has fewest errors
   checkSets() {
     let errorInputs = [];
     for (var i = 1; i < 6; i++) {
-      //Iterate through each valid val, check the set, and then render errors.
       if (this.state[i] !== "" && this.checkValidInput(i)){
         let inputs = [];
         let expectations = this.setExpectations(i);
@@ -93,7 +83,18 @@ class FormComponent extends React.Component {
     return errorInputs;
   }
 
-  //Sets input classes after validation is complete
+  //Establishes expected input values given a valid input
+  setExpectations(i) {
+    let expectations = {};
+    let val = this.val(i);
+
+    for (var j = 1; j < 6; j++) {
+      expectations[j] = val * Math.pow(2, (j - i));
+    }
+    return expectations;
+  }
+
+  //Renders errors by changing input CSS classes
   setErrors(inputs){
     for (var i = 1; i < 6; i++) {
       if (!inputs.includes(i) && this.checkValidInput(i)) {
